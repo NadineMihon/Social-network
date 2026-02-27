@@ -7,6 +7,7 @@ import { Field } from "../../components/ui/Field";
 import { Form } from "../../components/ui/Form";
 import { Input } from "../../components/ui/Input";
 import { Button } from "../../components/ui/Button";
+import { useAuth } from "../../hooks/useAuth";
 
 import * as SC from "./styles";
 
@@ -14,12 +15,21 @@ const DEFAULT_VALUES = { email: '', password: '' };
 
 export const AuthPage = () => {
     const [formValues, setFormValues] = useState(DEFAULT_VALUES);
+    const [error, setError] = useState('');
 
+    const { loginUser } = useAuth();
     const navigate = useNavigate();
 
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault();
-        console.log(formValues);
+        try {
+            await loginUser(formValues);
+
+            navigate('/');
+            setFormValues(DEFAULT_VALUES);
+        } catch (e) {
+            setError(e.message || 'Возникла ошибка');
+        }
         setFormValues(DEFAULT_VALUES);
     };
 
@@ -34,9 +44,7 @@ export const AuthPage = () => {
             <SC.Wrapper>
                 <Card>
                     <SC.AuthWrapper>
-                        <Field>
-                            <Typo variant="title">Авторизация</Typo>    
-                        </Field>
+                        <Typo variant="title">Авторизация</Typo>    
                         <Form onSubmit={onSubmit}>
                             <Field>
                                 <Input 
@@ -56,10 +64,9 @@ export const AuthPage = () => {
                                     onChange={(e) => onChange(e.target.name, e.target.value)}
                                 />
                             </Field>
-                            <Field>
-                                <Button type="submit" disabled={disabled}>Войти</Button>
-                            </Field>
-                        </Form>
+                            <Button type="submit" disabled={disabled}>Войти</Button>   
+                        </Form> 
+                        <Button onClick={() => navigate('/registration')} >Зарегистрироваться</Button>
                     </SC.AuthWrapper>
                 </Card>    
             </SC.Wrapper>

@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Input = styled.input `
     max-width: 400px;
-    width: 100%;
+    width:${props => props.$width === 'auto' ? 'auto' : '100%'};
     font-size: 16px;
     font-weight: 500;
     line-height: 22px;

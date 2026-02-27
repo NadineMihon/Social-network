@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { Container } from "../../components/ui/Container";
 import { Toolbar } from "../../components/ui/Toolbar";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
 import { Posts } from "../../components/Posts";
+import { CreatePost } from "./components/CreatePost";
+import { useAuth } from "../../hooks/useAuth";
 
 const posts = [
     {
@@ -31,8 +34,14 @@ const posts = [
     }
 ];
 
-
 export const MainPage = () => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const onSubmitForm = (formValues) => {
+        console.log(formValues);
+        setIsOpen(false);
+    };
+
     return (
         <Container>
             <Toolbar>
@@ -41,8 +50,13 @@ export const MainPage = () => {
                     type="text"
                     placeholder="Поиск по постам"
                 />
-                <Button>Написать новый пост</Button>
+                <Button onClick={() => setIsOpen(prev => !prev)}>
+                    {isOpen ? 'Скрыть форму' : 'Написать новый пост'}
+                </Button>
             </Toolbar>
+            {
+                isOpen && <CreatePost onSubmitForm={onSubmitForm} />
+            }
             <Posts posts={posts} />
         </Container>
     )

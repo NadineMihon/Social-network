@@ -7,6 +7,7 @@ import { Field } from "../../components/ui/Field";
 import { Form } from "../../components/ui/Form";
 import { Input } from "../../components/ui/Input";
 import { Button } from "../../components/ui/Button";
+import { useRegister } from "../../hooks/useRegister";
 
 import * as SC from "./styles";
 
@@ -14,13 +15,22 @@ const DEFAULT_VALUES = { name: '', surname: '', email: '', password: '' };
 
 export const RegistrationPage = () => {
     const [formValues, setFormValues] = useState(DEFAULT_VALUES);
-    
+    const [error, setError] = useState('');
+
+    const register = useRegister();
     const navigate = useNavigate();
-    
-    const onSubmit = (e) => {
+
+    const onSubmit = async (e) => {
         e.preventDefault();
-        console.log(formValues);
-        setFormValues(DEFAULT_VALUES);
+        try {
+            const user = await register(formValues);
+
+            navigate('/auth');
+
+            setFormValues(DEFAULT_VALUES);
+        } catch (e) {
+            setError(e.message || 'Возникла ошибка');
+        }
     };
     
     const onChange = (name, value) => {
@@ -34,9 +44,7 @@ export const RegistrationPage = () => {
             <SC.Wrapper>
                 <Card>
                     <SC.RegistrationWrapper>
-                        <Field>
-                            <Typo variant="title">Регистрация</Typo>    
-                        </Field>
+                        <Typo variant="title">Регистрация</Typo>    
                         <Form onSubmit={onSubmit}>
                             <Field>
                                 <Input 
@@ -74,9 +82,7 @@ export const RegistrationPage = () => {
                                     onChange={(e) => onChange(e.target.name, e.target.value)}
                                 />
                             </Field>
-                            <Field>
-                                <Button type="submit" disabled={disabled}>Регистрация</Button>
-                            </Field>
+                            <Button type="submit" disabled={disabled}>Регистрация</Button>
                         </Form>
                     </SC.RegistrationWrapper>
                 </Card>    

@@ -3,9 +3,11 @@ const usersController = require('../controllers/usersController');
 
 const usersRoutes = new Router();
 
-usersRoutes.get('/user', usersController.getUser);
+usersRoutes.post('/login', usersController.loginUser);
+usersRoutes.get('/:id', usersController.getUser);
 usersRoutes.post('/add', usersController.addUser);
-usersRoutes.patch('/user/:id/addFriend', usersController.addFriend);
-usersRoutes.patch('/user/:id/removeFriend', usersController.removeFriend);
+usersRoutes.patch('/:id/addFriend', usersController.addFriend);
+usersRoutes.patch('/:id/removeFriend', usersController.removeFriend);
+usersRoutes.get('/:id/suggestions', usersController.getFriendSuggestions);
 
 module.exports = usersRoutes;

@@ -2,7 +2,7 @@ const UsersModel = require('../models/UsersModel');
 const bcrypt = require('bcrypt');
 
 class UsersController {
-    async getUser (req, res) {
+    async loginUser (req, res) {
         try {
             const user = await UsersModel.findOne({ email: req.body.email });
 
@@ -17,9 +17,22 @@ class UsersController {
             }
 
             const { passwordHash, ...userData } = user._doc;
-
             return res.status(200).json(userData);
+        } catch (e) {
+            return res.status(500).json({ message: 'Возникла ошибка при авторизации' });
+        }
+    };
 
+    async getUser (req, res) {
+        try {
+            const user = await UsersModel.findById(req.params.id);
+
+            if (!user) {
+                return res.status(404).json({ message: 'Пользователь не найден' });
+            }
+
+            const { passwordHash, ...userData } = user._doc;
+            return res.status(200).json(userData);
         } catch (e) {
             return res.status(500).json({ message: 'Произошла ошибка при получении пользователя' });
         }
@@ -110,6 +123,36 @@ class UsersController {
             return res.status(200).json({ friends: user.friends });
         } catch (e) {
             return res.status(500).json({ message: 'Произошла ошибка при удалении друга' });
+        }
+    };
+
+    async getFriendSuggestions (req, res) {
+        try {
+            const { id } = req.params;
+            const { limit = 5 } = req.query;
+
+            const user = await UsersModel.findById(id).select('friends');
+
+            if (!user) {
+                return res.status(404).json({ message: 'Пользователь не найден' });
+            }
+
+            const excludedIds = [id, ...user.friends];
+
+            const suggestions = await UsersModel.aggregate([
+                { $match: { _id: { $nin: excludedIds } } },
+                { $sample: { size: Number(limit) } },
+                {
+                    $project: {
+                        passwordHash: 0,
+                        email: 0,
+                    },
+                },
+            ]);
+
+            return res.status(200).json({ users: suggestions });
+        } catch (e) {
+            return res.status(500).json({ message: 'Произошла ошибка при предложении друзей' });
         }
     };
 };
