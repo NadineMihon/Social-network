@@ -76,6 +76,29 @@ class UsersController {
         }
     };
 
+    async getFriends (req, res) {
+        try {
+            const user = await UsersModel.findById(req.params.id).select('friends');
+
+            if (!user) {
+                return res.status(404).json({ message: 'Пользователь не найден' });
+            }
+
+            const friendsIds = user.friends;
+
+            const friends = await UsersModel.find({ _id: { $in: friendsIds } });
+
+            const friendsData = friends.map((friend) => {
+                const { passwordHash, ...friendData } = friend._doc;
+                return friendData;
+            });
+
+            return res.status(200).json(friendsData);
+        } catch (e) {
+            return res.status(500).json({ message: 'Произошла ошибка при получении списка друзей' });
+        }
+    };
+
     async addFriend (req, res) {
         try {
             const { userId, friendId } = req.body;
@@ -137,7 +160,7 @@ class UsersController {
                 return res.status(404).json({ message: 'Пользователь не найден' });
             }
 
-            const excludedIds = [id, ...user.friends];
+            const excludedIds = [user._id, ...user.friends];
 
             const suggestions = await UsersModel.aggregate([
                 { $match: { _id: { $nin: excludedIds } } },
@@ -150,7 +173,7 @@ class UsersController {
                 },
             ]);
 
-            return res.status(200).json({ users: suggestions });
+            return res.status(200).json(suggestions);
         } catch (e) {
             return res.status(500).json({ message: 'Произошла ошибка при предложении друзей' });
         }

@@ -6,6 +6,7 @@ const usersRoutes = new Router();
 usersRoutes.post('/login', usersController.loginUser);
 usersRoutes.get('/:id', usersController.getUser);
 usersRoutes.post('/add', usersController.addUser);
+usersRoutes.get('/:id/friends', usersController.getFriends);
 usersRoutes.patch('/:id/addFriend', usersController.addFriend);
 usersRoutes.patch('/:id/removeFriend', usersController.removeFriend);
 usersRoutes.get('/:id/suggestions', usersController.getFriendSuggestions);
