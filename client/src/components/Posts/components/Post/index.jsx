@@ -10,10 +10,11 @@ import messageIcon from "../../../../assets/icons/messageIcon.svg";
 import * as SC from "./styles";
 
 export const Post = ({ post }) => {
+    const user = { username: 'Имя Фамилия', role: 'user' };
     return (
         <Card>
             <SC.AuthorInfo>
-                <User />
+                <User user={user}/>
             </SC.AuthorInfo>
             <SC.ContentInfo>
                 <Typo>{post.content}</Typo>

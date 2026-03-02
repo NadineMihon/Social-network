@@ -5,7 +5,6 @@ import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
 import { Posts } from "../../components/Posts";
 import { CreatePost } from "./components/CreatePost";
-import { useAuth } from "../../hooks/useAuth";
 
 const posts = [
     {

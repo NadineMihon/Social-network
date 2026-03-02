@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Aside } from "../ui/Aside";
 import { Typo } from "../ui/Typo";
 import { Avatar } from "../ui/Avatar";
@@ -9,37 +10,31 @@ import postsIcon from "../../assets/icons/postsIcon.svg";
 import friendsIcon from "../../assets/icons/friendsIcon.svg";
 import exitIcon from "../../assets/icons/exitIcon.svg";
 import plusGreyIcon from "../../assets/icons/plusGreyIcon.svg";
-import { AuthProvider } from "../../context/AuthContext";
 import { useAuth } from "../../hooks/useAuth";
+import { useFriendSuggestions } from "../../hooks/useFriendSuggestions";
+import { useFriends } from "../../hooks/useFriends";
 
 import * as SC from "./styles";
 
-const friendSuggestions = [
-    {
-        id: 1,
-        name: 'Имя Фамилия',
-        login: '@user1',
-    },
-    {
-        id: 2,
-        name: 'Имя Фамилия',
-        login: '@user2',
-    },
-    {
-        id: 3,
-        name: 'Имя Фамилия',
-        login: '@user3',
-    },
-    {
-        id: 4,
-        name: 'Имя Фамилия',
-        login: '@user4',
-    },
-];
-
 export const Root = () => {
     const { user, logout } = useAuth();
+    const suggestionsState = useFriendSuggestions();
+    const { suggestions, refetchSuggestions } = suggestionsState;
+    const friendsState = useFriends();
+    const { addFriend, refetchFriends } = friendsState;
     const navigate = useNavigate();
+
+    const handleAddFriend = async(friendId) => {
+        await addFriend({ userId: user._id, friendId });
+        await refetchSuggestions();
+        await refetchFriends();
+    };
+
+    useEffect(() => {
+            if (user?._id) {
+                refetchSuggestions();
+            }
+    }, [user?._id, refetchSuggestions]);
 
     return (
         <SC.Wrapper>
@@ -67,7 +62,7 @@ export const Root = () => {
                     }
                 </SC.LeftSidebar>
             </Aside>
-            <Outlet />
+            <Outlet context={{ friendsState, suggestionsState }}/>
             <Aside>
                 <SC.RightSidebar>
                     <SC.UserArea>
@@ -80,15 +75,11 @@ export const Root = () => {
                             <Typo variant="title">Возможные друзья</Typo>
                         </SC.FriendSuggestionsField>
                         {
-                            friendSuggestions.map((user) => <SC.FriendSuggestionsField key={user.id}>
+                            suggestions.map((user) => <SC.FriendSuggestionsField key={user._id}>
                                 <SC.UserDescription>
-                                    <Avatar />
-                                    <SC.UserName>
-                                        <Typo data-weight="bold">{user.name}</Typo>
-                                        <Typo data-tone="muted">{user.login}</Typo>
-                                    </SC.UserName>
+                                    <User user={user}/>
                                 </SC.UserDescription>
-                                <SC.PlusIcon src={plusGreyIcon} alt="Plus Icon" />
+                                <SC.PlusIcon onClick={() => handleAddFriend(user._id)} src={plusGreyIcon} alt="Plus Icon" />
                             </SC.FriendSuggestionsField>
                             )
                         }

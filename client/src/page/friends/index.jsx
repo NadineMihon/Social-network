@@ -1,36 +1,34 @@
+import { useEffect } from "react";
 import { Card } from "../../components/ui/Card";
 import { Container } from "../../components/ui/Container";
 import { Input } from "../../components/ui/Input";
 import { Toolbar } from "../../components/ui/Toolbar";
+import { Typo } from "../../components/ui/Typo";
 import { User } from "../../components/ui/User";
 import { DeleteIcon } from "../../components/ui/DeleteIcon";
+import { useAuth } from "../../hooks/useAuth";
+import { useOutletContext } from "react-router-dom";
 
 import * as SC from "./styles";
 
-const friends = [
-    {
-        id: 1,
-        name: 'Имя Фамилия',
-        role: 'Пользователь',
-    },
-    {
-        id: 2,
-        name: 'Имя Фамилия',
-        role: 'Пользователь',
-    },
-    {
-        id: 3,
-        name: 'Имя Фамилия',
-        role: 'Пользователь',
-    },
-    {
-        id: 4,
-        name: 'Имя Фамилия',
-        role: 'Пользователь',
-    },
-];
-
 export const FriendsPage = () => {
+    const { friendsState, suggestionsState } = useOutletContext();
+    const { friends, refetchFriends, removeFriend } = friendsState;
+    const { refetchSuggestions } = suggestionsState;
+    const { user } = useAuth();
+
+    const handleRemoveFriend = async(friendId) => {
+        await removeFriend({ userId: user._id, friendId });
+        await refetchSuggestions();
+        await refetchFriends();
+    };
+
+    useEffect(() => {
+        if (user?._id) {
+            refetchFriends();
+        }
+    }, [user?._id, refetchFriends]);
+
     return (
         <Container>
             <Toolbar>
@@ -44,10 +42,11 @@ export const FriendsPage = () => {
                 <Card>
                     <SC.Friends>
                         {
-                            friends.map((user) => <SC.Friend key={user.id}>
+                            friends.length ? friends.map((user) => <SC.Friend key={user._id}>
                                 <User user={user}  />
-                                <DeleteIcon />
+                                <DeleteIcon onClick={() => handleRemoveFriend(user._id)}/>
                             </SC.Friend>)
+                            : <Typo variant="subtitle">Список друзей пуст</Typo>
                         }
                     </SC.Friends>
                 </Card>    
