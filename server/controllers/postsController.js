@@ -3,7 +3,7 @@ const PostsModel = require('../models/PostsModel');
 class PostsController {
     async getPosts (req, res) {
         try {
-            const { role, friends = [] } = req.body || {};
+            const { role, friends = [], userId } = req.body || {};
 
             let filter = {};
 
@@ -16,6 +16,7 @@ class PostsController {
                     $or: [
                         { visibility: 'public' },
                         { author: { $in: friends } },
+                        { author: userId },
                     ],
                 };
             }

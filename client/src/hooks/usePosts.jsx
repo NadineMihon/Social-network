@@ -33,10 +33,10 @@ export const usePosts = () => {
     const getPosts = useCallback(async () => {
         try {
             const body = user 
-                ? { role: user.role, friends: user.friends }
+                ? { role: user.role, friends: user.friends, userId: user._id }
                 : {};
 
-            const data = await asyncAction('/feed', {
+            const data = await asyncAction('/list', {
                 method: 'POST',
                 body: JSON.stringify(body),
             });

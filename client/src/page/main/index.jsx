@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Container } from "../../components/ui/Container";
 import { Toolbar } from "../../components/ui/Toolbar";
 import { Button } from "../../components/ui/Button";
@@ -6,43 +6,30 @@ import { Input } from "../../components/ui/Input";
 import { Posts } from "../../components/Posts";
 import { CreatePost } from "./components/CreatePost";
 import { useAuth } from "../../hooks/useAuth";
-
-const posts = [
-    {
-        id: 1,
-        author: "Имя Фамилия",
-        role: 'Пользователь',
-        content: `Lorem ipsum dolor sit, amet consectetur adipisicing elit.Quidem, provident 
-            voluptas laudantium perferendis distinctio eveniet.Corrupti molestiae natus officia blanditiis rem, 
-            ratione consequatur assumenda inventore, veniam ab modi soluta nesciunt!`,
-    },
-    {
-        id: 2,
-        author: "Имя Фамилия",
-        role: 'Пользователь2',
-        content: `Lorem ipsum dolor sit, amet consectetur adipisicing elit.Quidem, provident 
-            voluptas laudantium perferendis distinctio eveniet.Corrupti molestiae natus officia blanditiis rem, 
-            ratione consequatur assumenda inventore, veniam ab modi soluta nesciunt!`,
-    },
-    {
-        id: 3,
-        author: "Имя Фамилия",
-        role: 'Пользователь3',
-        content: `Lorem ipsum dolor sit, amet consectetur adipisicing elit.Quidem, provident 
-            voluptas laudantium perferendis distinctio eveniet.Corrupti molestiae natus officia blanditiis rem, 
-            ratione consequatur assumenda inventore, veniam ab modi soluta nesciunt!`,
-    }
-];
+import { useOutletContext } from "react-router-dom";
 
 export const MainPage = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     const { user } = useAuth();
+    const { postsState } = useOutletContext();
+    const { posts, refetchPosts, addPost, deletePost, toggleLike } = postsState;
 
-    const onSubmitForm = (formValues) => {
-        console.log({ authorId: user._id, ...formValues });
-        setIsOpen(false);
+    const onSubmitForm = async (formValues) => {
+        try {
+            await addPost({ authorId: user._id, ...formValues });
+            await refetchPosts();
+            setIsOpen(false); 
+        } catch (e) {
+            console.log(e)
+        }
     };
+
+    useEffect(() => {
+        if (user?._id) {
+            refetchPosts();
+        }
+    }, [user?._id, refetchPosts]);
 
     return (
         <Container>
@@ -52,14 +39,16 @@ export const MainPage = () => {
                     type="text"
                     placeholder="Поиск по постам"
                 />
-                <Button onClick={() => setIsOpen(prev => !prev)}>
-                    {isOpen ? 'Скрыть форму' : 'Написать новый пост'}
-                </Button>
+                {
+                    user && <Button onClick={() => setIsOpen(prev => !prev)}>
+                        {isOpen ? 'Скрыть форму' : 'Написать новый пост'}
+                    </Button>
+                }
             </Toolbar>
             {
                 isOpen && <CreatePost onSubmitForm={onSubmitForm} />
             }
-            <Posts posts={posts} />
+            <Posts posts={posts} refetchPosts={refetchPosts} deletePost={deletePost} toggleLike={toggleLike}/>
         </Container>
     )
 };
