@@ -3,15 +3,19 @@ const PostsModel = require('../models/PostsModel');
 class PostsController {
     async getPosts (req, res) {
         try {
+            const { role, friends = [] } = req.body || {};
+
             let filter = {};
 
-            if (req.body.role === 'admin') {
+            if (!role) {
+                filter = { visibility: 'public' };
+            } else if (role === 'admin') {
                 filter = {};
             } else {
                 filter = {
                     $or: [
                         { visibility: 'public' },
-                        { author: { $in: req.body.friends } },
+                        { author: { $in: friends } },
                     ],
                 };
             }

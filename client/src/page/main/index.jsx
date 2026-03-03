@@ -5,6 +5,7 @@ import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
 import { Posts } from "../../components/Posts";
 import { CreatePost } from "./components/CreatePost";
+import { useAuth } from "../../hooks/useAuth";
 
 const posts = [
     {
@@ -36,8 +37,10 @@ const posts = [
 export const MainPage = () => {
     const [isOpen, setIsOpen] = useState(false);
 
+    const { user } = useAuth();
+
     const onSubmitForm = (formValues) => {
-        console.log(formValues);
+        console.log({ authorId: user._id, ...formValues });
         setIsOpen(false);
     };
 
