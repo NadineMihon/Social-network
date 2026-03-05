@@ -9,6 +9,7 @@ export const AuthContext = createContext({
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [isAuthLoading, setIsAuthLoading] = useState(true);
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -18,9 +19,14 @@ export const AuthProvider = ({ children }) => {
                 const parsedUser = JSON.parse(storedUser);
                 setUser(parsedUser);    
             } catch (e) {
-                console.log('Ошибка парсинга user из localStorage', e)
+                console.log('Ошибка парсинга user из localStorage', e);
+                setUser(null);
             }
+        } else {
+            setUser(null);
         }
+
+        setIsAuthLoading(false);
     }, []);
 
     const loginUser = useCallback(async (data) => {
@@ -55,7 +61,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, setUser, loginUser, logout }}>
+        <AuthContext.Provider value={{ user, setUser, isAuthLoading, loginUser, logout }}>
             {children}
         </AuthContext.Provider>
     )

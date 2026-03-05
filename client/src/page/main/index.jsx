@@ -11,6 +11,7 @@ import { useOutletContext } from "react-router-dom";
 
 export const MainPage = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [search, setSearch] = useState('');
 
     const { user } = useAuth();
     const { postsState } = useOutletContext();
@@ -25,6 +26,11 @@ export const MainPage = () => {
             console.log(e)
         }
     };
+    const filteredPosts = posts
+        ? posts.filter((post) => 
+            post.content.toLowerCase().includes(search.toLowerCase())
+        )
+        : [];
 
     useEffect(() => {
         if (user?._id) {
@@ -41,6 +47,8 @@ export const MainPage = () => {
                     name="search"
                     type="text"
                     placeholder="Поиск по постам"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                 />
                 {
                     user && <Button onClick={() => setIsOpen(prev => !prev)}>
@@ -51,7 +59,7 @@ export const MainPage = () => {
             {
                 isOpen && <CreatePost onSubmitForm={onSubmitForm} />
             }
-            <Posts posts={posts} refetchPosts={refetchPosts} deletePost={deletePost} toggleLike={toggleLike}/>
+            <Posts posts={filteredPosts} refetchPosts={refetchPosts} deletePost={deletePost} toggleLike={toggleLike}/>
         </Container>
     )
 };

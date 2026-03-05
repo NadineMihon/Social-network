@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "./useAuth";
 
 export const useFriends = () => {
-    const [friends, setFriends] = useState([]);
+    const [friends, setFriends] = useState(null);
+    const [isFriendsLoading, setIsFriendsLoading] = useState(false);
     
     const { user } = useAuth();
 
@@ -12,6 +13,8 @@ export const useFriends = () => {
         async (id) => {
             try {
                 if (!user) return;
+
+                setIsFriendsLoading(true);
 
                 const response = await fetch(`http://localhost:3003/api/users/${id}/friends`);
 
@@ -25,6 +28,8 @@ export const useFriends = () => {
             } catch (e) {
                 console.log(e);
                 throw e;
+            } finally {
+                setIsFriendsLoading(false);
             }
         }, [user]
     );
@@ -78,6 +83,7 @@ export const useFriends = () => {
 
     return {
         friends,
+        isFriendsLoading,
         refetchFriends,
         addFriend,
         removeFriend,

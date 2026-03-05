@@ -1,51 +1,53 @@
-import { useState, useEffect } from "react";
 import { Container } from "../../../../components/ui/Container";
 import { Friend } from "../Friend";
 import { Typo } from "../../../../components/ui/Typo";
 import { Loader } from "../../../../components/ui/Loader";
+import { Card } from "../../../../components/ui/Card";
 import { useAuth } from "../../../../hooks/useAuth";
 
 import * as SC from "./styles";
 
-export const Friends = ({ friends, removeFriend, refetchSuggestions, refetchPosts, refetchFriends,}) => {
-    const { user } = useAuth();
+export const Friends = ({ friends, isFriendsLoading, removeFriend, refetchSuggestions, refetchPosts, refetchFriends }) => {
+    const { user, isAuthLoading } = useAuth();
 
-    const [initialLoading, setInitialLoading] = useState(true);
+    if (isAuthLoading) return <Loader />;
 
-    useEffect(() => {
-        if (!user?._id) return;
+    if (!user) {
+        return (
+            <Container>
+                <Card>
+                    <SC.FriendsItems>
+                        <Typo variant="subtitle">Необходима авторизация</Typo>
+                    </SC.FriendsItems>
+                </Card>
+            </Container>
+        );
+    }
     
-        const load = async () => {
-            await refetchFriends();
-            setInitialLoading(false);
-        };
-    
-        load();
-    }, [user?._id, refetchFriends]);
-
-    if (initialLoading) return <Loader />;
+    if (!isFriendsLoading && friends === null) {
+        return <Loader />;
+    }
 
     return (
         <Container>
-            {
-                user ? <SC.FriendsItems>
-                        {
-                            friends && friends.length ? friends.map((friend) => <Friend
+            <SC.FriendsItems>
+                {
+                    friends && friends.length ? (
+                        friends.map((friend) => (
+                            <Friend
                                 friend={friend} 
                                 key={friend._id}
                                 removeFriend={removeFriend}
                                 refetchSuggestions={refetchSuggestions}
                                 refetchPosts={refetchPosts}
                                 refetchFriends={refetchFriends}
-                            />)
-                            : <Typo variant="subtitle">Список друзей пуст</Typo> 
-                        
-                        }
-                    </SC.FriendsItems>
-                    : <SC.FriendsItems>
-                        <Typo variant="subtitle">Необходима авторизация</Typo>
-                    </SC.FriendsItems>
-            }
+                            />
+                        ))
+                    ) : (
+                        <Typo variant="subtitle">Список друзей пуст</Typo>    
+                    )
+                }                             
+            </SC.FriendsItems>
         </Container>
     )
 };

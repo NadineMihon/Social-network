@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card } from "../../components/ui/Card";
 import { Container } from "../../components/ui/Container";
 import { Input } from "../../components/ui/Input";
@@ -13,6 +14,14 @@ export const FriendsPage = () => {
     const { refetchSuggestions } = suggestionsState;
     const { refetchPosts } = postsState;
 
+    const [search, setSearch] = useState('');
+
+    const filteredFriends = friends
+        ? friends.filter((friend) => 
+            friend.username.toLowerCase().includes(search.toLowerCase())
+        )
+        : [];
+
     return (
         <Container>
             <Toolbar>
@@ -20,12 +29,14 @@ export const FriendsPage = () => {
                     name="search"
                     type="text"
                     placeholder="Поиск по друзьям"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                 />
             </Toolbar>
             <SC.FriendsWrapper>
                 <Card>
                     <Friends 
-                        friends={friends} 
+                        friends={filteredFriends} 
                         removeFriend={removeFriend}
                         refetchSuggestions={refetchSuggestions}
                         refetchPosts={refetchPosts}
