@@ -10,7 +10,7 @@ import { Button } from "../../../../components/ui/Button";
 
 import * as SC from "./styles";
 
-const DEFAULT_VALUES = { body: '', visibility: 'public' };
+const DEFAULT_VALUES = { content: '', visibility: 'public' };
 
 export const CreatePost = ({ onSubmitForm }) => {
     const [formValues, setFormValues] = useState(DEFAULT_VALUES);
@@ -25,7 +25,7 @@ export const CreatePost = ({ onSubmitForm }) => {
         setFormValues(DEFAULT_VALUES);
     };
 
-    const disabled = !formValues.body;
+    const disabled = !formValues.content;
 
     return (
         <Container>
@@ -34,8 +34,8 @@ export const CreatePost = ({ onSubmitForm }) => {
                     <SC.CreatePost>
                         <Form onSubmit={onSubmit}>
                             <TextAria 
-                                name="body"
-                                value={formValues.body} 
+                                name="content"
+                                value={formValues.content} 
                                 placeholder="Текст поста" 
                                 rows={5} 
                                 cols={30}

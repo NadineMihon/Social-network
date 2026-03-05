@@ -7,7 +7,7 @@ class CommentsController {
                 return res.status(400).json({ message: 'Не указан postId' });
             }
 
-            const result = (await CommentsModel.find({ post: req.body.postId })).sort({ createdAt: 1 });
+            const result = await CommentsModel.find({ post: req.body.postId }).sort({ createdAt: 1 });
 
             return res.status(200).json({ comments: result });
         } catch (e) {

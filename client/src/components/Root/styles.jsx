@@ -62,6 +62,7 @@ export const RightSidebar = styled.div `
     display: flex;
     flex-direction: column;
     align-items: start;
+    border-top: 1px solid white;
 `
 export const UserArea = styled.div `
     width: 100%;
@@ -70,7 +71,6 @@ export const UserArea = styled.div `
     align-items: flex-start;
     box-sizing: border-box;
     padding: 20px 24px;
-    border-bottom: 1px solid #E2E8F0;
 `
 export const FriendSuggestions = styled.div `
     width: 100%;
