@@ -3,6 +3,7 @@ import * as SC from "./styles";
 const mapVariantToTag = {
     title: 'h2',
     subtitle: 'h3',
+    caption: 'span',
 };
 
 export const Typo = ({ variant = 'body', children, ...props }) => {

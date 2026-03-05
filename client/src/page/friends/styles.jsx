@@ -7,14 +7,5 @@ export const FriendsWrapper = styled.div `
     gap: 16px;
 `
 export const Friends = styled.div `
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
     padding: 30px;
-`
-export const Friend = styled.div `
-    display: flex;
-    gap: 15px;
-    justify-content: space-between;
-    align-items: center;
 `

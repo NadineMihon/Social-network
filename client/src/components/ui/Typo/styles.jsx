@@ -33,4 +33,11 @@ export const Typo = styled.p `
         line-height: 20px;
         letter-spacing: -0.006em
     }
+
+    &[data-variant='caption'] {
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 15px;
+        color: #47556989;
+    }
 `

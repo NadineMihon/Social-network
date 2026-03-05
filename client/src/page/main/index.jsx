@@ -3,6 +3,7 @@ import { Container } from "../../components/ui/Container";
 import { Toolbar } from "../../components/ui/Toolbar";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
+import { Loader } from "../../components/ui/Loader";
 import { Posts } from "../../components/Posts";
 import { CreatePost } from "./components/CreatePost";
 import { useAuth } from "../../hooks/useAuth";
@@ -30,6 +31,8 @@ export const MainPage = () => {
             refetchPosts();
         }
     }, [user?._id, refetchPosts]);
+
+    if (!posts) return <Loader />
 
     return (
         <Container>

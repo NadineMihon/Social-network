@@ -1,20 +1,20 @@
 import { useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import { Aside } from "../ui/Aside";
 import { Typo } from "../ui/Typo";
 import { Avatar } from "../ui/Avatar";
 import { User } from "../ui/User";
 import { Button } from "../ui/Button";
-import { Outlet, useNavigate } from "react-router-dom";
-import titleIcon from "../../assets/icons/titleIcon.svg";
-import postsIcon from "../../assets/icons/postsIcon.svg";
-import friendsIcon from "../../assets/icons/friendsIcon.svg";
-import exitIcon from "../../assets/icons/exitIcon.svg";
-import plusGreyIcon from "../../assets/icons/plusGreyIcon.svg";
 import { useAuth } from "../../hooks/useAuth";
 import { useFriendSuggestions } from "../../hooks/useFriendSuggestions";
 import { useFriends } from "../../hooks/useFriends";
 import { useGetUser } from "../../hooks/useGetUser";
 import { usePosts } from "../../hooks/usePosts";
+import titleIcon from "../../assets/icons/titleIcon.svg";
+import postsIcon from "../../assets/icons/postsIcon.svg";
+import friendsIcon from "../../assets/icons/friendsIcon.svg";
+import exitIcon from "../../assets/icons/exitIcon.svg";
+import plusGreyIcon from "../../assets/icons/plusGreyIcon.svg";
 
 import * as SC from "./styles";
 
