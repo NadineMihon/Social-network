@@ -3,6 +3,7 @@ import { createContext, useCallback, useEffect, useState } from "react";
 export const AuthContext = createContext({
     user: null,
     setUser: () => {},
+    updateUser: () => {},
     loginUser: () => {},
     logout: () => {},
 });
@@ -60,8 +61,13 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('user');
     };
 
+    const updateUser = (newUser) => {
+        setUser(newUser);
+        localStorage.setItem('user', JSON.stringify(newUser));
+    };
+
     return (
-        <AuthContext.Provider value={{ user, setUser, isAuthLoading, loginUser, logout }}>
+        <AuthContext.Provider value={{ user, setUser, updateUser, isAuthLoading, loginUser, logout }}>
             {children}
         </AuthContext.Provider>
     )

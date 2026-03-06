@@ -6,7 +6,7 @@ import { useGetUser } from "../../../../hooks/useGetUser";
 import * as SC from "./styles";
 
 export const Friend = ({ friend, removeFriend, refetchSuggestions, refetchFriends, refetchPosts }) => {
-    const { user, setUser } = useAuth();
+    const { user, updateUser } = useAuth();
 
     const getUser = useGetUser();
 
@@ -15,8 +15,8 @@ export const Friend = ({ friend, removeFriend, refetchSuggestions, refetchFriend
         await refetchSuggestions();
         await refetchFriends();
 
-        const updateUser = await getUser(user._id);
-        setUser(updateUser);
+        const updatedUser = await getUser(user._id);
+        updateUser(updatedUser);
 
         await refetchPosts();
     };

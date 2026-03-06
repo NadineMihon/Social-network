@@ -19,7 +19,7 @@ import plusGreyIcon from "../../assets/icons/plusGreyIcon.svg";
 import * as SC from "./styles";
 
 export const Root = () => {
-    const { user, logout, setUser } = useAuth();
+    const { user, updateUser, logout } = useAuth();
     const suggestionsState = useFriendSuggestions();
     const { suggestions, refetchSuggestions } = suggestionsState;
     const friendsState = useFriends();
@@ -34,8 +34,8 @@ export const Root = () => {
         await refetchSuggestions();
         await refetchFriends();
 
-        const updateUser = await getUser(user._id);
-        setUser(updateUser);
+        const updatedUser = await getUser(user._id);
+        updateUser(updatedUser);
 
         await refetchPosts();
     };
